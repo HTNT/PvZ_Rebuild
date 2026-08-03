@@ -35,5 +35,22 @@ namespace PVZ_MVS.Scripts.Grid
         public Cell GetCell(int row, int column){
             return _cells[row, column];
         }
+
+        public Vector2Int GetCellPosition(Vector3 worldPosition){
+            Vector3 localPosition = worldPosition - Origin;
+
+            int column = Mathf.FloorToInt(localPosition.x / CellSize);
+            int row = Mathf.FloorToInt(localPosition.y / CellSize);
+
+            return new Vector2Int(column, row);
+        }
+
+        public bool IsValidCell(int row, int column){
+            return (row >= 0 && row < Rows) && (column >=0 && column < Columns);
+        }
+
+        public Vector3 GetWorldPosition(int row, int column){
+            return _cells[row, column].WorldPosition;
+        }
     }
 }
