@@ -17,6 +17,7 @@ ehthumbs.db
 Thumbs.db
 
 # Visual Studio / MonoDevelop / Rider
+Context/
 .vscode/
 .idea/
 *.csproj

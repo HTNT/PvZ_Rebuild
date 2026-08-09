@@ -5,30 +5,27 @@ namespace PVZ_MVS.Scripts.Plants
 {
     public abstract class ShooterPlant : Plant{
         // Runtime State
-        //private Zombie _currentTarget;
+        private Transform _currentTarget;
         private float _attackTimer;
+        private bool _isInitialized;
 
-        // Cached Data
-        protected ShooterPlantData ShooterData => (ShooterPlantData)Data;
-
+        protected ShooterPlantData ShooterData => (ShooterPlantData) Data;
         // Unity Callback
-        protected virtual void Update()
-        {
-
+        protected virtual void Update(){
+            
         }
 
         // Core Logic
-        protected virtual void FindTarget()
-        {
-
+        protected virtual void FindTarget(){
+            
         }
 
-        protected virtual void HandleAttack()
-        {
-
+        protected virtual void HandleAttack(){
+            
         }
 
         // Implemented by subclasses
         protected abstract void Shoot();
+
     }
 }

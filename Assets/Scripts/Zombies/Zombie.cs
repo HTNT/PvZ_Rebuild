@@ -1,18 +1,18 @@
 using UnityEngine;
 using PVZ_MVS.Scripts.Data;
 using PVZ_MVS.Scripts.Interfaces;
-namespace PVZ_MVS.Scripts.Plants
+namespace PVZ_MVS.Scripts.Zombies
 {
-    public abstract class Plant : MonoBehaviour, IDamageable{
-        [SerializeField] private PlantData _data;
+    public abstract class Zombie : MonoBehaviour, IDamageable{
+        [SerializeField] private ZombieData _data;
         private int _currentHp;
 
-        public PlantData Data => _data;
+        public ZombieData Data => _data;
         public int CurrentHp => _currentHp;
 
         public virtual void Initialize(){
             if(_data == null){
-                Debug.LogError($"{name} chua duoc gan plantdata.");
+                Debug.LogError($"{name} chua duoc gan zombiedata.");
                 return;
             }
             _currentHp = _data.MaxHp;
@@ -28,6 +28,5 @@ namespace PVZ_MVS.Scripts.Plants
         protected virtual void Die(){
             Destroy(gameObject);
         }
-
     }
 }
