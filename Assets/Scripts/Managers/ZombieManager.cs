@@ -36,6 +36,22 @@ namespace PVZ_MVS.Scripts.Managers
             _zombiesByLane[lane].Remove(zombie);
         }
 
+        public bool HasZombieInLane(int lane){
+            if (!IsValidLane(lane)){
+                return false;
+            }
+
+            List<Zombie> zombieLane = _zombiesByLane[lane];
+
+            for (int i = zombieLane.Count - 1; i >= 0; i--){
+                if (zombieLane[i] == null){
+                    zombieLane.RemoveAt(i);
+                }
+            }
+
+            return zombieLane.Count > 0;
+        }
+
         public Zombie GetFirstZombieInLane(int lane){
             if (!IsValidLane(lane)){
                 return null;

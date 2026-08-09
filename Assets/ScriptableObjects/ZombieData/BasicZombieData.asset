@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5736845621fdd2843a559894cad702f6, type: 3}
   m_Name: BasicZombieData
   m_EditorClassIdentifier: Assembly-CSharp::PVZ_MVS.Scripts.Data.BasicZombieData
-  _zombieName: 
-  _maxHp: 0
-  _damage: 0
-  _attackCooldown: 0
-  _moveSpeed: 0
+  _zombieName: Basic Zom
+  _maxHp: 2000
+  _damage: 25
+  _attackCooldown: 1
+  _moveSpeed: 1
   _icon: {fileID: 0}
   _prefab: {fileID: 0}
   _description: 
