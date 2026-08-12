@@ -5,7 +5,7 @@ namespace PVZ_MVS.Scripts.Plants
 {
     public abstract class Plant : MonoBehaviour, IDamageable{
         [SerializeField] private PlantData _data;
-        private int _currentHp;
+        [SerializeField] private int _currentHp;
 
         public PlantData Data => _data;
         public int CurrentHp => _currentHp;
@@ -16,6 +16,10 @@ namespace PVZ_MVS.Scripts.Plants
                 return;
             }
             _currentHp = _data.MaxHp;
+        }
+
+        protected virtual void Start(){
+            Initialize();
         }
 
         public virtual void TakeDamage(int damage){

@@ -16,7 +16,7 @@ MonoBehaviour:
   _maxHp: 2000
   _damage: 25
   _attackCooldown: 1
-  _moveSpeed: 1
+  _moveSpeed: 2
   _icon: {fileID: 0}
   _prefab: {fileID: 0}
   _description: 

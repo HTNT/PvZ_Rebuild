@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c3590a0ee229b145be94ae54e3cf5cd, type: 3}
   m_Name: PeashooterData
   m_EditorClassIdentifier: Assembly-CSharp::PVZ_MVS.Scripts.Data.PeashooterData
-  _plantName: 
-  _cost: 0
-  _maxHp: 0
+  _plantName: PeaShooter
+  _cost: 100
+  _maxHp: 200
   _icon: {fileID: 0}
   _prefab: {fileID: 0}
   _description: 
-  _damage: 0
+  _damage: 20
   _attackRange: 0
-  _attackCooldown: 0
-  _projectilePrefab: {fileID: 0}
+  _attackCooldown: 1
+  _projectilePrefab: {fileID: 8295773400732481488, guid: bd763033faca59c40bd34d5330332b1a, type: 3}
