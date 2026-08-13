@@ -5,6 +5,8 @@ namespace PVZ_MVS.Scripts.Grid
         private Grid _grid;
         private Vector2Int _hoverCell = new Vector2Int(-1, -1);
 
+        public Grid Grid => _grid;
+
         private void Awake(){
             _grid = new Grid(5, 9, 1f, Vector3.zero);
             Debug.Log("Grid created");
@@ -25,6 +27,9 @@ namespace PVZ_MVS.Scripts.Grid
 
                 if (_grid.IsValidCell(cellPosition.y, cellPosition.x)){
                     _hoverCell = cellPosition;
+                }
+                else{
+                    _hoverCell = new Vector2Int(-1, -1);
                 }
             }
         }

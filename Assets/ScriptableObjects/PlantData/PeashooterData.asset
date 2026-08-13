@@ -16,7 +16,7 @@ MonoBehaviour:
   _cost: 100
   _maxHp: 200
   _icon: {fileID: 0}
-  _prefab: {fileID: 0}
+  _prefab: {fileID: 1667132074723890059, guid: 1c9a3869fb7ac6e4e8fce2e32a5f200f, type: 3}
   _description: 
   _damage: 20
   _attackRange: 0

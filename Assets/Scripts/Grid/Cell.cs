@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using PVZ_MVS.Scripts.Plants;
 namespace PVZ_MVS.Scripts.Grid
 {
     public class Cell{
@@ -10,6 +10,16 @@ namespace PVZ_MVS.Scripts.Grid
             Row = row;
             Column = column;
             WorldPosition = worldPosition;
+        }
+
+        public Plant OccupyingPlant { private set; get;}
+        public bool IsOccupied => OccupyingPlant != null;
+
+        public void SetPlant(Plant plant){
+            OccupyingPlant = plant;
+        }
+        public void ClearPlant(){
+            OccupyingPlant = null;
         }
     }
 }

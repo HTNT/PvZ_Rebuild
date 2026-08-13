@@ -18,5 +18,5 @@ MonoBehaviour:
   _attackCooldown: 1
   _moveSpeed: 2
   _icon: {fileID: 0}
-  _prefab: {fileID: 0}
+  _prefab: {fileID: 2762280126068533167, guid: e6ff629e29aea274096c2ac8c1b186df, type: 3}
   _description: 

@@ -21,13 +21,25 @@ namespace PVZ_MVS.Scripts.Zombies
         public int Lane => _lane;
         public int CurrentHp => _currentHp;
 
-        public virtual void Initialize(){
-            if(_data == null){
-                Debug.LogError($"{name} chua duoc gan zombiedata.");
+        public virtual void Initialize(ZombieManager zombieManager, int lane){
+            if (_data == null)
+            {
+                Debug.LogError($"{name} chua duoc gan ZombieData.");
                 return;
             }
+
+            if (zombieManager == null)
+            {
+                Debug.LogError($"{name} chua duoc gan ZombieManager.");
+                return;
+            }
+
+            _zombieManager = zombieManager;
+            _lane = lane;
             _currentHp = _data.MaxHp;
             _attackTimer = _data.AttackCooldown;
+
+            _zombieManager.RegisterZombie(this, _lane);
         }
 
         protected virtual void Start(){
@@ -35,14 +47,16 @@ namespace PVZ_MVS.Scripts.Zombies
                     Debug.LogError($"{name} chua duoc gan ZombieManager.");
                     return;
                 }
-                Initialize();
-                _zombieManager.RegisterZombie(this, Lane);
+                Initialize(_zombieManager, _lane);
+                _zombieManager.RegisterZombie(this, _lane);
         }
 
         protected virtual void Update(){
             if(_currentPlant == null){
+                //Debug.Log("Move");
                 Move();
             }else{
+
                 _attackTimer = Mathf.Max(0f, _attackTimer - Time.deltaTime);
                 HandleAttack();
             }
@@ -53,6 +67,9 @@ namespace PVZ_MVS.Scripts.Zombies
         }
 
         protected virtual void HandleAttack(){
+            if (_currentTarget == null){
+                return;
+            }
             if(_attackTimer > 0f){
                 return;
             }
@@ -61,6 +78,10 @@ namespace PVZ_MVS.Scripts.Zombies
         }
 
         protected virtual void Attack(){
+            if (_currentTarget == null){
+                return;
+            }
+            //Debug.Log("Attack");
             _currentTarget.TakeDamage(Data.Damage);
         }
 
@@ -91,7 +112,20 @@ namespace PVZ_MVS.Scripts.Zombies
                 return;
             }
             _currentPlant = collider.GetComponentInParent<Plant>();
-            _currentTarget = collider.GetComponent<IDamageable>();
+            _currentTarget = collider.GetComponentInParent<IDamageable>();
+        }
+
+        private void OnTriggerExit2D(Collider2D collider){
+            if(!collider.CompareTag("Plant")){
+                return;
+            }
+            IDamageable target = collider.GetComponentInParent<IDamageable>();
+            
+            if (target == _currentTarget)
+            {
+                _currentPlant = null;
+                _currentTarget = null;
+            }
         }
     }
 }

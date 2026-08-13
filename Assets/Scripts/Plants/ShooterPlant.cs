@@ -11,14 +11,31 @@ namespace PVZ_MVS.Scripts.Plants
         private bool _isInitialized;
         private bool _hasTargetInLane;
 
-        [SerializeField] private ZombieManager _zombieManager;
-        [SerializeField, Min(0)] private int _lane;
+        private ZombieManager _zombieManager;
+        private int _lane;
 
         protected ShooterPlantData ShooterData => (ShooterPlantData) Data;
         protected bool HasTargetInLane => _hasTargetInLane;
 
+        public void Initialize(ZombieManager zombieManager, int lane){
+            if (zombieManager == null){
+                Debug.LogError($"{name} chua duoc gan ZombieManager.");
+                return;
+            }
+
+            base.Initialize();
+
+            _zombieManager = zombieManager;
+            _lane = lane;
+            _isInitialized = true;
+        }
+
         // Unity Callback
         protected virtual void Update(){
+            if (!_isInitialized)
+            {
+                return;
+            }
             _attackTimer = Mathf.Max(0f, _attackTimer - Time.deltaTime);
 
             FindTarget();

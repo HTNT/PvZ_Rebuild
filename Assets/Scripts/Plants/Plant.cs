@@ -19,7 +19,7 @@ namespace PVZ_MVS.Scripts.Plants
         }
 
         protected virtual void Start(){
-            Initialize();
+            
         }
 
         public virtual void TakeDamage(int damage){
