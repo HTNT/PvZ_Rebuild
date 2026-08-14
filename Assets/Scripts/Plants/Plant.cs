@@ -18,10 +18,6 @@ namespace PVZ_MVS.Scripts.Plants
             _currentHp = _data.MaxHp;
         }
 
-        protected virtual void Start(){
-            
-        }
-
         public virtual void TakeDamage(int damage){
             _currentHp -= damage;
             if(_currentHp <=0){

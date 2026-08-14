@@ -10,6 +10,7 @@ namespace PVZ_MVS.Scripts.Managers
         [SerializeField] private GridManager _gridManager;
         [SerializeField] private ZombieManager _zombieManager;
         [SerializeField] private Peashooter _peashooterPrefab;
+        [SerializeField] private SunManager _sunManager;
 
         private void Update()
         {
@@ -21,6 +22,11 @@ namespace PVZ_MVS.Scripts.Managers
 
         private void TryPlacePeashooter()
         {
+            int cost = _peashooterPrefab.Data.Cost;
+            if(!_sunManager.TrySpendSun(cost)){
+                Debug.Log("Khong du sun");
+                return;
+            }
             Vector3 mouseWorldPosition =
                 Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
