@@ -1,6 +1,7 @@
 using UnityEngine;
 using PVZ_MVS.Scripts.Managers;
 using PVZ_MVS.Scripts.Data;
+using PVZ_MVS.Scripts.RuntimeContext;
 
 namespace PVZ_MVS.Scripts.Plants
 {
@@ -12,22 +13,20 @@ namespace PVZ_MVS.Scripts.Plants
 
         protected SunFlowerData SunFlowerData => (SunFlowerData)Data;
 
-        public void Initialize(SunManager sunManager){
-            if (sunManager == null)
+        public override void Initialize(PlantRuntimeContext context){
+            if (context.SunManager == null)
             {
                 Debug.LogError($"{name} chua duoc gan SunManager.");
                 return;
             }
             Debug.Log("Sun da vao tran");
-            base.Initialize();
+            base.Initialize(context);
 
-            _sunManager = sunManager;
+            _sunManager = context.SunManager;
             _sunTimer = SunFlowerData.SunCooldown;
             _isInitialized = true;
         }
-        private void Start(){
-            Initialize(_sunManager);
-        }
+
         private void Update(){
             if(!_isInitialized){
                 return;

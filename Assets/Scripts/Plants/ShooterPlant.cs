@@ -1,6 +1,7 @@
 using UnityEngine;
 using PVZ_MVS.Scripts.Data;
 using PVZ_MVS.Scripts.Managers;
+using PVZ_MVS.Scripts.RuntimeContext;
 
 namespace PVZ_MVS.Scripts.Plants
 {
@@ -17,16 +18,17 @@ namespace PVZ_MVS.Scripts.Plants
         protected ShooterPlantData ShooterData => (ShooterPlantData) Data;
         protected bool HasTargetInLane => _hasTargetInLane;
 
-        public void Initialize(ZombieManager zombieManager, int lane){
-            if (zombieManager == null){
+        public override void Initialize(PlantRuntimeContext context){
+            if (context.ZombieManager == null){
                 Debug.LogError($"{name} chua duoc gan ZombieManager.");
                 return;
             }
 
-            base.Initialize();
+            base.Initialize(context);
 
-            _zombieManager = zombieManager;
-            _lane = lane;
+            _zombieManager = context.ZombieManager;
+            _lane = context.Lane;
+            _attackTimer = 0f;
             _isInitialized = true;
         }
 

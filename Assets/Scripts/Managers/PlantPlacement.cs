@@ -1,5 +1,7 @@
+using PVZ_MVS.Scripts.Data;
 using PVZ_MVS.Scripts.Grid;
 using PVZ_MVS.Scripts.Plants;
+using PVZ_MVS.Scripts.RuntimeContext;
 using UnityEngine;
 
 namespace PVZ_MVS.Scripts.Managers
@@ -9,57 +11,48 @@ namespace PVZ_MVS.Scripts.Managers
         [SerializeField] private GridManager _gridManager;
         [SerializeField] private ZombieManager _zombieManager;
         [SerializeField] private SunManager _sunManager;
-        [SerializeField] private Peashooter _peashooterPrefab;
-        [SerializeField] private SunFlower _sunFlowerPrefab;
 
-        private Plant _selectedPlantPrefab;
-
-        private void Start()
-        {
-            _selectedPlantPrefab = _peashooterPrefab;
-        }
+        private PlantData _selectedPlantData;
 
         private void Update()
         {
-            HandlePlantSelection();
-
             if (Input.GetMouseButtonDown(0))
             {
                 TryPlaceSelectedPlant();
             }
         }
 
-        private void HandlePlantSelection()
+        public void SelectPlant(PlantData plantData)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1)
-                || Input.GetKeyDown(KeyCode.Keypad1))
-            {
-                _selectedPlantPrefab = _peashooterPrefab;
-                Debug.Log("Da chon Peashooter");
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha2)
-                || Input.GetKeyDown(KeyCode.Keypad2))
-            {
-                _selectedPlantPrefab = _sunFlowerPrefab;
-                Debug.Log("Da chon SunFlower");
-            }
+            _selectedPlantData = plantData;
         }
 
         private void TryPlaceSelectedPlant()
         {
-            if (_selectedPlantPrefab == null || _gridManager == null || _sunManager == null)
+            if (_selectedPlantData == null
+                || _gridManager == null
+                || _zombieManager == null
+                || _sunManager == null
+                || Camera.main == null)
             {
                 return;
             }
 
-            Vector3 mouseWorldPosition =
+            GameObject prefab = _selectedPlantData.Prefab;
+
+            if (prefab == null || prefab.GetComponent<Plant>() == null)
+            {
+                Debug.LogError($"{_selectedPlantData.PlantName} chua co Plant prefab hop le.");
+                return;
+            }
+
+            Vector3 mousePosition =
                 Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            mouseWorldPosition.z = 0f;
+            mousePosition.z = 0f;
 
             Vector2Int cellPosition =
-                _gridManager.Grid.GetCellPosition(mouseWorldPosition);
+                _gridManager.Grid.GetCellPosition(mousePosition);
 
             int column = cellPosition.x;
             int row = cellPosition.y;
@@ -76,54 +69,24 @@ namespace PVZ_MVS.Scripts.Managers
                 return;
             }
 
-            if (!HasRequiredManager())
-            {
-                return;
-            }
-
-            int cost = _selectedPlantPrefab.Data.Cost;
-
-            if (!_sunManager.TrySpendSun(cost))
+            if (!_sunManager.TrySpendSun(_selectedPlantData.Cost))
             {
                 Debug.Log("Khong du sun.");
                 return;
             }
 
             Plant plant = Instantiate(
-                _selectedPlantPrefab,
+                prefab,
                 cell.WorldPosition,
-                Quaternion.identity);
+                Quaternion.identity).GetComponent<Plant>();
 
-            InitializePlant(plant, row);
+            PlantRuntimeContext context = new PlantRuntimeContext(
+                _zombieManager,
+                _sunManager,
+                row);
 
+            plant.Initialize(context);
             cell.SetPlant(plant);
-        }
-
-        private bool HasRequiredManager()
-        {
-            if (_selectedPlantPrefab is ShooterPlant)
-            {
-                return _zombieManager != null;
-            }
-
-            return true;
-        }
-
-        private void InitializePlant(Plant plant, int lane)
-        {
-            if (plant is ShooterPlant shooterPlant)
-            {
-                shooterPlant.Initialize(_zombieManager, lane);
-                return;
-            }
-
-            if (plant is SunFlower sunFlower)
-            {
-                sunFlower.Initialize(_sunManager);
-                return;
-            }
-
-            plant.Initialize();
         }
     }
 }
