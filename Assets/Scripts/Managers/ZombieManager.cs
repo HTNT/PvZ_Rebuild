@@ -9,6 +9,27 @@ namespace PVZ_MVS.Scripts.Managers
 
         private List<Zombie>[] _zombiesByLane;
 
+        public int ActiveZombieCount{
+            get{
+                int count = 0;
+
+                for (int lane = 0; lane < _zombiesByLane.Length; lane++){
+                    List<Zombie> zombies = _zombiesByLane[lane];
+
+                    for (int index = zombies.Count - 1; index >= 0; index--){
+                        if (zombies[index] == null){
+                            zombies.RemoveAt(index);
+                            continue;
+                        }
+
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
         private void Awake(){
             _zombiesByLane = new List<Zombie>[_laneCount];
 

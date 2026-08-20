@@ -7,11 +7,11 @@ using PVZ_MVS.Scripts.Plants;
 namespace PVZ_MVS.Scripts.Zombies
 {
     public abstract class Zombie : MonoBehaviour, IDamageable{
-        [SerializeField] private ZombieManager _zombieManager;
         [SerializeField] private ZombieData _data;
-        [SerializeField, Min(0)] private int _lane;
         [SerializeField] private int _currentHp;
 
+        private ZombieManager _zombieManager;
+        private int _lane;
         private Plant _currentPlant;
         private IDamageable _currentTarget;
         private float _attackTimer;
@@ -40,15 +40,6 @@ namespace PVZ_MVS.Scripts.Zombies
             _attackTimer = _data.AttackCooldown;
 
             _zombieManager.RegisterZombie(this, _lane);
-        }
-
-        protected virtual void Start(){
-            if (_zombieManager == null){
-                    Debug.LogError($"{name} chua duoc gan ZombieManager.");
-                    return;
-                }
-                Initialize(_zombieManager, _lane);
-                _zombieManager.RegisterZombie(this, _lane);
         }
 
         protected virtual void Update(){
