@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicZombieData
   m_EditorClassIdentifier: Assembly-CSharp::PVZ_MVS.Scripts.Data.BasicZombieData
   _zombieName: Basic Zom
-  _maxHp: 2000
+  _maxHp: 20
   _damage: 25
   _attackCooldown: 1
   _moveSpeed: 0.2

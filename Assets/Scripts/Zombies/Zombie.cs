@@ -11,7 +11,7 @@ namespace PVZ_MVS.Scripts.Zombies
         [SerializeField] private int _currentHp;
 
         private ZombieManager _zombieManager;
-        private int _lane;
+        [SerializeField] private int _lane;
         private Plant _currentPlant;
         private IDamageable _currentTarget;
         private float _attackTimer;
