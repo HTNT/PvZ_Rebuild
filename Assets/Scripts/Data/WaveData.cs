@@ -16,11 +16,13 @@ namespace PVZ_MVS.Scripts.Data
     [Serializable]
     public class WaveSpawnEntry
     {
-        [SerializeField] private ZombieData _zombieData;
+        [SerializeField] private ZombieData[] _zombieDatas;
         [SerializeField, Min(1)] private int _count = 1;
         [SerializeField, Min(0f)] private float _spawnInterval = 1f;
 
-        public ZombieData ZombieData => _zombieData;
+
+
+        public ZombieData[] ZombieDatas => _zombieDatas;
         public int Count => _count;
         public float SpawnInterval => _spawnInterval;
     }

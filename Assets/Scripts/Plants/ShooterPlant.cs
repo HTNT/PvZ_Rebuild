@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using PVZ_MVS.Scripts.Data;
 using PVZ_MVS.Scripts.Managers;
@@ -65,6 +67,11 @@ namespace PVZ_MVS.Scripts.Plants
 
         // Implemented by subclasses
         protected abstract void Shoot();
+        protected IEnumerator DelayedAction(float delay, Action action)
+        {
+            yield return new WaitForSeconds(delay);
 
+            action?.Invoke();
+        }
     }
 }

@@ -69,7 +69,18 @@ namespace PVZ_MVS.Scripts.Managers
             WaveSpawnEntry entry =
                 _waves[_currentWaveIndex].SpawnEntries[_currentEntryIndex];
 
-            if (!_zombieSpawner.SpawnRandomZombie(entry.ZombieData)){
+            if (entry.ZombieDatas == null || entry.ZombieDatas.Length == 0)
+            {
+                Debug.LogError("WaveSpawnEntry chua co ZombieData.");
+                _state = WaveState.Idle;
+                return;
+            }
+            ZombieData randomZombieData = entry.ZombieDatas[
+            UnityEngine.Random.Range(0, entry.ZombieDatas.Length)];
+
+
+            if (!_zombieSpawner.SpawnRandomZombie(randomZombieData))
+            {
                 Debug.LogError("Spawn wave that bai.");
                 _state = WaveState.Idle;
                 return;
