@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872c6fccab8fd2c428dfef86d549b96d, type: 3}
   m_Name: RePeaterData
   m_EditorClassIdentifier: Assembly-CSharp::PVZ_MVS.Scripts.Data.RePeater
-  _plantName: 
-  _cost: 0
-  _maxHp: 0
+  _plantName: RePeater
+  _cost: 1
+  _maxHp: 250
   _icon: {fileID: 0}
-  _prefab: {fileID: 0}
+  _prefab: {fileID: 851673700567478851, guid: ab841921715aaae4d9f8d51fb79b5ec3, type: 3}
   _description: 
-  _damage: 0
+  _damage: 220
   _attackRange: 0
-  _attackCooldown: 0
-  _projectilePrefab: {fileID: 0}
+  _attackCooldown: 1
+  _projectilePrefab: {fileID: 8295773400732481488, guid: bd763033faca59c40bd34d5330332b1a, type: 3}

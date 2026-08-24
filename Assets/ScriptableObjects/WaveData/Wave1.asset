@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Wave1
   m_EditorClassIdentifier: Assembly-CSharp::PVZ_MVS.Scripts.Data.WaveData
   _spawnEntries:
-  - _zombieData: {fileID: 11400000, guid: f1a2b3c4d5e6789012345678abcdef01, type: 2}
+  - _zombieDatas:
+    - {fileID: 11400000, guid: f1a2b3c4d5e6789012345678abcdef01, type: 2}
+    - {fileID: 11400000, guid: 6cc3ed5dc6b0e1d44a35bc4b36c2424f, type: 2}
     _count: 10
     _spawnInterval: 2
