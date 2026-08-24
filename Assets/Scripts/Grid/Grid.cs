@@ -6,24 +6,26 @@ namespace PVZ_MVS.Scripts.Grid
         public int Rows{ get; }
         public int Columns{ get; }
 
-        public float CellSize{ get; }
+        public float CellWidth{ get; }
+        public float CellHeight{ get; }
 
         public Vector3 Origin { get; }
 
         private Cell[,] _cells;
         
-        public Grid(int rows, int columns, float cellSize, Vector3 origin){
+        public Grid(int rows, int columns, float cellWidth, float cellHeight, Vector3 origin){
             Rows = rows;
             Columns = columns;
-            CellSize = cellSize;
+            CellWidth = cellWidth;
+            CellHeight = cellHeight;
             Origin = origin;
 
             _cells = new Cell[Rows, Columns];
 
             for (int row = 0; row < Rows; row++){
                 for (int column = 0; column < Columns; column++){
-                        float x = Origin.x + (column + 0.5f) * CellSize;
-                        float y = Origin.y + (row + 0.5f) * CellSize;
+                        float x = Origin.x + (column + 0.5f) * CellWidth;
+                        float y = Origin.y + (row + 0.5f) * CellHeight;
 
                         Vector3 worldPosition = new Vector3(x, y, 0);
 
@@ -39,8 +41,8 @@ namespace PVZ_MVS.Scripts.Grid
         public Vector2Int GetCellPosition(Vector3 worldPosition){
             Vector3 localPosition = worldPosition - Origin;
 
-            int column = Mathf.FloorToInt(localPosition.x / CellSize);
-            int row = Mathf.FloorToInt(localPosition.y / CellSize);
+            int column = Mathf.FloorToInt(localPosition.x / CellWidth);
+            int row = Mathf.FloorToInt(localPosition.y / CellHeight);
 
             return new Vector2Int(column, row);
         }

@@ -1,17 +1,32 @@
 using PVZ_MVS.Scripts.Data;
+using PVZ_MVS.Scripts.Grid;
 using PVZ_MVS.Scripts.Zombies;
 using UnityEngine;
+using GridData = PVZ_MVS.Scripts.Grid.Grid;
 
 namespace PVZ_MVS.Scripts.Managers
 {
     public class ZombieSpawner : MonoBehaviour
     {
         [SerializeField] private ZombieManager _zombieManager;
-        [SerializeField] private Transform[] _spawnPoints;
+        [SerializeField] private GridManager _gridManager;
+        [SerializeField, Min(0f)] private float _spawnOffset = 0.5f;
+
+        private Transform[] _spawnPoints;
+        private bool _areSpawnPointsCreated;
+
+        private void Awake(){
+            if (_gridManager == null){
+                _gridManager = FindAnyObjectByType<GridManager>();
+            }
+        }
+
+        private void Start(){
+            CreateSpawnPoints();
+        }
 
         public bool SpawnRandomZombie(ZombieData zombieData){
-            if (_spawnPoints == null || _spawnPoints.Length == 0){
-                Debug.LogError("Chua gan Spawn Points.");
+            if (!EnsureSpawnPoints()){
                 return false;
             }
 
@@ -45,6 +60,44 @@ namespace PVZ_MVS.Scripts.Managers
 
             zombie.Initialize(_zombieManager, lane);
 
+            return true;
+        }
+
+        private bool EnsureSpawnPoints(){
+            return _areSpawnPointsCreated || CreateSpawnPoints();
+        }
+
+        private bool CreateSpawnPoints(){
+            if (_areSpawnPointsCreated){
+                return true;
+            }
+
+            if (_gridManager == null || _gridManager.Grid == null){
+                Debug.LogError("ZombieSpawner can GridManager da duoc khoi tao.");
+                return false;
+            }
+
+            GridData grid = _gridManager.Grid;
+            _spawnPoints = new Transform[grid.Rows];
+
+            GameObject container = new GameObject("Generated Spawn Points");
+            container.transform.SetParent(transform);
+
+            float spawnX = grid.Origin.x + grid.Columns * grid.CellWidth + _spawnOffset;
+
+            for (int lane = 0; lane < grid.Rows; lane++){
+                GameObject spawnPoint = new GameObject($"Spawn Point Lane {lane}");
+                spawnPoint.transform.SetParent(container.transform);
+                spawnPoint.transform.position = new Vector3(
+                    spawnX,
+                    grid.GetWorldPosition(lane, 0).y,
+                    0f
+                );
+
+                _spawnPoints[lane] = spawnPoint.transform;
+            }
+
+            _areSpawnPointsCreated = true;
             return true;
         }
 
