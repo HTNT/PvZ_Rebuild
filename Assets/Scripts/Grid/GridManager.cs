@@ -2,8 +2,14 @@ using UnityEngine;
 namespace PVZ_MVS.Scripts.Grid
 {
     public class GridManager : MonoBehaviour{
-        [SerializeField, Range(0f, 1f)] private float _screenWidthPercent = 0.7f;
-        [SerializeField, Range(0f, 1f)] private float _screenHeightPercent = 0.9f;
+        private const int RowCount = 5;
+        private const int ColumnCount = 9;
+
+        [Header("Padding in Cell Size")]
+        [SerializeField, Min(0f)] private float _topPaddingInCellHeight = 1f;
+        [SerializeField, Min(0f)] private float _bottomPaddingInCellHeight = 1f / 3f;
+        [SerializeField, Min(0f)] private float _leftPaddingInCellWidth = 2f;
+        [SerializeField, Min(0f)] private float _rightPaddingInCellWidth = 0.5f;
 
         private Grid _grid;
         private Vector2Int _hoverCell = new Vector2Int(-1, -1);
@@ -23,21 +29,40 @@ namespace PVZ_MVS.Scripts.Grid
                 return;
             }
 
-            float gridWidth = mainCamera.orthographicSize * 2f
-                * mainCamera.aspect * _screenWidthPercent;
-            float gridHeight = mainCamera.orthographicSize * 2f
-                * _screenHeightPercent;
-            Vector3 gridOrigin = mainCamera.transform.position
-                - new Vector3(gridWidth * 0.5f, gridHeight * 0.5f, 0f);
-            gridOrigin.z = 0f;
+            float screenWidth = mainCamera.orthographicSize * 2f
+                * mainCamera.aspect;
+            float screenHeight = mainCamera.orthographicSize * 2f;
+
+            float cellWidth = screenWidth / (
+                ColumnCount
+                + _leftPaddingInCellWidth
+                + _rightPaddingInCellWidth
+            );
+            float cellHeight = screenHeight / (
+                RowCount
+                + _topPaddingInCellHeight
+                + _bottomPaddingInCellHeight
+            );
+
+            Vector3 screenBottomLeft = mainCamera.transform.position
+                - new Vector3(screenWidth * 0.5f, screenHeight * 0.5f, 0f);
+            Vector3 gridOrigin = new Vector3(
+                screenBottomLeft.x + _leftPaddingInCellWidth * cellWidth,
+                screenBottomLeft.y + _bottomPaddingInCellHeight * cellHeight,
+                0f
+            );
 
             _grid = new Grid(
-                5,
-                9,
-                gridWidth / 9f,
-                gridHeight / 5f,
+                RowCount,
+                ColumnCount,
+                cellWidth,
+                cellHeight,
                 gridOrigin
             );
+        }
+
+        private void OnValidate(){
+            _grid = null;
         }
 
         private void Update(){

@@ -9,10 +9,12 @@ namespace PVZ_MVS.Scripts.Managers
     public class PlantSelectionManager : MonoBehaviour
     {
         [Header("Selection")]
-        [SerializeField, Min(1)] private int _maxSelectedPlants = 4;
+        [SerializeField] private PlantData[] _availablePlants;
+        [SerializeField, Min(1)] private int _maxSelectedPlants = 9;
         [SerializeField] private Transform _plantPool;
         [SerializeField] private PlantSelectionCardUI _selectionCardPrefab;
         [SerializeField] private Image[] _selectedSlotIcons;
+        [SerializeField] private SelectedPlantSlotUI[] _selectedSlots;
 
         [Header("Gameplay Cards")]
         [SerializeField] private Transform _gameplayCardPanel;
@@ -67,19 +69,14 @@ namespace PVZ_MVS.Scripts.Managers
                 return;
             }
 
-            foreach (PlantCardUI gameplayCard in _gameplayCards)
+            foreach (PlantData plantData in _availablePlants)
             {
-                if (gameplayCard == null || gameplayCard.PlantData == null)
-                {
-                    continue;
-                }
-
                 PlantSelectionCardUI selectionCard = Instantiate(
                     _selectionCardPrefab,
                     _plantPool
                 );
 
-                selectionCard.Initialize(gameplayCard.PlantData, this);
+                selectionCard.Initialize(plantData, this);
                 _selectionCards.Add(selectionCard);
             }
         }
@@ -129,10 +126,10 @@ namespace PVZ_MVS.Scripts.Managers
 
         private void ConfirmSelection()
         {
-            if (_selectedPlants.Count != _maxSelectedPlants)
-            {
-                return;
-            }
+            // if (_selectedPlants.Count != _maxSelectedPlants)
+            // {
+            //     return;
+            // }
 
             SetGameplayCardsActive(true);
             gameObject.SetActive(false);
@@ -164,15 +161,15 @@ namespace PVZ_MVS.Scripts.Managers
 
         private void RefreshUI()
         {
-            for (int i = 0; i < _selectedSlotIcons.Length; i++)
+            for (int i = 0; i < _selectedSlots.Length; i++)
             {
-                bool hasPlant = i < _selectedPlants.Count;
-
-                _selectedSlotIcons[i].enabled = hasPlant;
-
-                if (hasPlant)
+                if (i < _selectedPlants.Count)
                 {
-                    _selectedSlotIcons[i].sprite = _selectedPlants[i].Icon;
+                    _selectedSlots[i].ShowPlant(_selectedPlants[i]);
+                }
+                else
+                {
+                    _selectedSlots[i].Clear();
                 }
             }
 
@@ -188,8 +185,7 @@ namespace PVZ_MVS.Scripts.Managers
 
             if (_playButton != null)
             {
-                _playButton.interactable =
-                    _selectedPlants.Count == _maxSelectedPlants;
+                _playButton.interactable = _selectedPlants.Count > 0;
             }
         }
     }
