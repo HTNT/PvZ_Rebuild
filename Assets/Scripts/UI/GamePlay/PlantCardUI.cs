@@ -17,6 +17,8 @@ namespace PVZ_MVS.Scripts.UI
         [SerializeField] private TextMeshProUGUI _costText;
         [SerializeField] private Button _button;
 
+        public PlantData PlantData => _plantData;
+
         private void Awake()
         {
             if (_button == null)

@@ -32,6 +32,16 @@ namespace PVZ_MVS.Scripts.Managers
         private void Start()
         {
             Time.timeScale = 1f;
+            _state = GameState.Preparing;
+        }
+
+        public void StartGame()
+        {
+            if (_state != GameState.Preparing)
+            {
+                return;
+            }
+
             _state = GameState.Playing;
             _waveManager.StartWaves();
         }

@@ -31,9 +31,9 @@ namespace PVZ_MVS.Scripts.Managers
         public event Action<int> OnWaveCompleted;
         public event Action OnAllWavesCompleted;
 
-        private void Start(){
-            StartWaves();
-        }
+        // private void Start(){
+        //     StartWaves();
+        // }
 
         private void Update(){
             if (_state == WaveState.Spawning){
