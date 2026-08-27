@@ -13,11 +13,10 @@ namespace PVZ_MVS.Scripts.Managers
         [SerializeField, Min(1)] private int _maxSelectedPlants = 9;
         [SerializeField] private Transform _plantPool;
         [SerializeField] private PlantSelectionCardUI _selectionCardPrefab;
-        [SerializeField] private Image[] _selectedSlotIcons;
-        [SerializeField] private SelectedPlantSlotUI[] _selectedSlots;
 
-        [Header("Gameplay Cards")]
-        [SerializeField] private Transform _gameplayCardPanel;
+        [Header("Selected Bar")]
+        [SerializeField] private SelectedPlantSlotUI[] _selectedSlots;
+        [SerializeField] private PlantPlacement _plantPlacement;
 
         [Header("Buttons")]
         [SerializeField] private Button _resetButton;
@@ -28,11 +27,10 @@ namespace PVZ_MVS.Scripts.Managers
 
         private readonly List<PlantData> _selectedPlants = new();
         private readonly List<PlantSelectionCardUI> _selectionCards = new();
-        private PlantCardUI[] _gameplayCards;
+        private bool _isSelectionLocked;
 
         private void Awake()
         {
-            FindGameplayCards();
             CreateSelectionCards();
 
             if (_resetButton != null)
@@ -45,40 +43,7 @@ namespace PVZ_MVS.Scripts.Managers
                 _playButton.onClick.AddListener(ConfirmSelection);
             }
 
-            SetGameplayCardsActive(false);
-            RefreshUI();
-        }
-
-        private void FindGameplayCards()
-        {
-            if (_gameplayCardPanel == null)
-            {
-                return;
-            }
-
-            _gameplayCards =
-                _gameplayCardPanel.GetComponentsInChildren<PlantCardUI>(true);
-        }
-
-        private void CreateSelectionCards()
-        {
-            if (_plantPool == null
-                || _selectionCardPrefab == null
-                || _gameplayCards == null)
-            {
-                return;
-            }
-
-            foreach (PlantData plantData in _availablePlants)
-            {
-                PlantSelectionCardUI selectionCard = Instantiate(
-                    _selectionCardPrefab,
-                    _plantPool
-                );
-
-                selectionCard.Initialize(plantData, this);
-                _selectionCards.Add(selectionCard);
-            }
+            RefreshPreviewUI();
         }
 
         private void OnDestroy()
@@ -96,7 +61,7 @@ namespace PVZ_MVS.Scripts.Managers
 
         public void TogglePlant(PlantData plantData)
         {
-            if (plantData == null)
+            if (_isSelectionLocked || plantData == null)
             {
                 return;
             }
@@ -115,23 +80,29 @@ namespace PVZ_MVS.Scripts.Managers
                 _selectedPlants.Add(plantData);
             }
 
-            RefreshUI();
+            RefreshPreviewUI();
         }
 
         public void ResetSelection()
         {
+            if (_isSelectionLocked)
+            {
+                return;
+            }
+
             _selectedPlants.Clear();
-            RefreshUI();
+            RefreshPreviewUI();
         }
 
         private void ConfirmSelection()
         {
-            // if (_selectedPlants.Count != _maxSelectedPlants)
-            // {
-            //     return;
-            // }
+            if (_selectedPlants.Count == 0 || _isSelectionLocked)
+            {
+                return;
+            }
 
-            SetGameplayCardsActive(true);
+            _isSelectionLocked = true;
+            LockSelectedBar();
             gameObject.SetActive(false);
 
             if (_gameManager != null)
@@ -140,32 +111,37 @@ namespace PVZ_MVS.Scripts.Managers
             }
         }
 
-        private void SetGameplayCardsActive(bool isGameStarted)
+        private void CreateSelectionCards()
         {
-            if (_gameplayCards == null)
+            if (_plantPool == null || _selectionCardPrefab == null)
             {
                 return;
             }
 
-            foreach (PlantCardUI card in _gameplayCards)
+            foreach (PlantData plantData in _availablePlants)
             {
-                if (card == null)
+                if (plantData == null)
                 {
                     continue;
                 }
 
-                bool isSelected = _selectedPlants.Contains(card.PlantData);
-                card.gameObject.SetActive(isGameStarted && isSelected);
+                PlantSelectionCardUI selectionCard = Instantiate(
+                    _selectionCardPrefab,
+                    _plantPool
+                );
+
+                selectionCard.Initialize(plantData, this);
+                _selectionCards.Add(selectionCard);
             }
         }
 
-        private void RefreshUI()
+        private void RefreshPreviewUI()
         {
             for (int i = 0; i < _selectedSlots.Length; i++)
             {
                 if (i < _selectedPlants.Count)
                 {
-                    _selectedSlots[i].ShowPlant(_selectedPlants[i]);
+                    _selectedSlots[i].ShowPreview(_selectedPlants[i]);
                 }
                 else
                 {
@@ -175,17 +151,32 @@ namespace PVZ_MVS.Scripts.Managers
 
             foreach (PlantSelectionCardUI card in _selectionCards)
             {
-                if (card != null)
-                {
-                    card.RefreshSelectionState(
-                        _selectedPlants.Contains(card.PlantData)
-                    );
-                }
+                card.RefreshSelectionState(
+                    _selectedPlants.Contains(card.PlantData)
+                );
             }
 
             if (_playButton != null)
             {
                 _playButton.interactable = _selectedPlants.Count > 0;
+            }
+        }
+
+        private void LockSelectedBar()
+        {
+            for (int i = 0; i < _selectedSlots.Length; i++)
+            {
+                if (i < _selectedPlants.Count)
+                {
+                    _selectedSlots[i].LockForGameplay(
+                        _selectedPlants[i],
+                        _plantPlacement
+                    );
+                }
+                else
+                {
+                    _selectedSlots[i].Clear();
+                }
             }
         }
     }

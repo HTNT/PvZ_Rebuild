@@ -5,11 +5,9 @@ namespace PVZ_MVS.Scripts.Grid
         private const int RowCount = 5;
         private const int ColumnCount = 9;
 
-        [Header("Padding in Cell Size")]
-        [SerializeField, Min(0f)] private float _topPaddingInCellHeight = 1f;
-        [SerializeField, Min(0f)] private float _bottomPaddingInCellHeight = 1f / 3f;
-        [SerializeField, Min(0f)] private float _leftPaddingInCellWidth = 2f;
-        [SerializeField, Min(0f)] private float _rightPaddingInCellWidth = 0.5f;
+        [SerializeField, Range(0.1f, 1f)] private float _gridHeightPercent = 0.9f;
+        [SerializeField, Range(0f, 1f)] private float _bottomPaddingPercent = 0f;
+        [SerializeField, Range(0f, 1f)] private float _rightPaddingPercent = 0.11f;
 
         private Grid _grid;
         private Vector2Int _hoverCell = new Vector2Int(-1, -1);
@@ -29,26 +27,24 @@ namespace PVZ_MVS.Scripts.Grid
                 return;
             }
 
-            float screenWidth = mainCamera.orthographicSize * 2f
-                * mainCamera.aspect;
             float screenHeight = mainCamera.orthographicSize * 2f;
+            float screenWidth = screenHeight * mainCamera.aspect;
+            float gridHeight = screenHeight * _gridHeightPercent;
 
-            float cellWidth = screenWidth / (
-                ColumnCount
-                + _leftPaddingInCellWidth
-                + _rightPaddingInCellWidth
-            );
-            float cellHeight = screenHeight / (
-                RowCount
-                + _topPaddingInCellHeight
-                + _bottomPaddingInCellHeight
-            );
+            float cellHeight = gridHeight / RowCount * 1.05f;
+            float cellWidth = cellHeight * 3f / 4f * 1.1f * 1.1f * 0.95f * 0.98f;
+            float gridWidth = ColumnCount * cellWidth;
+            float screenBottom = mainCamera.transform.position.y
+                - screenHeight * 0.5f;
+            float screenLeft = mainCamera.transform.position.x
+                - screenWidth * 0.5f;
+            float leftPadding = screenWidth
+                - gridWidth
+                - screenWidth * _rightPaddingPercent;
 
-            Vector3 screenBottomLeft = mainCamera.transform.position
-                - new Vector3(screenWidth * 0.5f, screenHeight * 0.5f, 0f);
             Vector3 gridOrigin = new Vector3(
-                screenBottomLeft.x + _leftPaddingInCellWidth * cellWidth,
-                screenBottomLeft.y + _bottomPaddingInCellHeight * cellHeight,
+                screenLeft + leftPadding,
+                screenBottom + screenHeight * _bottomPaddingPercent,
                 0f
             );
 

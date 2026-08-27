@@ -1,4 +1,5 @@
 using PVZ_MVS.Scripts.Data;
+using PVZ_MVS.Scripts.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,51 @@ namespace PVZ_MVS.Scripts.UI
         [SerializeField] private TextMeshProUGUI _costText;
         [SerializeField] private GameObject _emptyVisual;
         [SerializeField] private GameObject _filledVisual;
+        [SerializeField] private Button _button;
+
+        private PlantData _plantData;
+        private PlantPlacement _plantPlacement;
+
+        private void Awake()
+        {
+            if (_button != null)
+            {
+                _button.onClick.AddListener(SelectPlant);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_button != null)
+            {
+                _button.onClick.RemoveListener(SelectPlant);
+            }
+        }
+
+        public void ShowPreview(PlantData plantData)
+        {
+            ShowPlant(plantData);
+            _plantPlacement = null;
+
+            if (_button != null)
+            {
+                _button.interactable = false;
+            }
+        }
+
+        public void LockForGameplay(
+            PlantData plantData,
+            PlantPlacement plantPlacement)
+        {
+            ShowPlant(plantData);
+            _plantPlacement = plantPlacement;
+
+            if (_button != null)
+            {
+                _button.interactable = _plantData != null
+                    && _plantPlacement != null;
+            }
+        }
 
         public void ShowPlant(PlantData plantData)
         {
@@ -20,6 +66,8 @@ namespace PVZ_MVS.Scripts.UI
                 Clear();
                 return;
             }
+
+            _plantData = plantData;
 
             if (_emptyVisual != null)
             {
@@ -48,6 +96,9 @@ namespace PVZ_MVS.Scripts.UI
 
         public void Clear()
         {
+            _plantData = null;
+            _plantPlacement = null;
+
             if (_emptyVisual != null)
             {
                 _emptyVisual.SetActive(true);
@@ -72,6 +123,21 @@ namespace PVZ_MVS.Scripts.UI
             {
                 _costText.text = string.Empty;
             }
+
+            if (_button != null)
+            {
+                _button.interactable = false;
+            }
+        }
+
+        private void SelectPlant()
+        {
+            if (_plantData == null || _plantPlacement == null)
+            {
+                return;
+            }
+
+            _plantPlacement.SelectPlant(_plantData);
         }
     }
 }
