@@ -8,6 +8,10 @@ namespace PVZ_MVS.Scripts.Grid
         [SerializeField, Range(0.1f, 1f)] private float _gridHeightPercent = 0.9f;
         [SerializeField, Range(0f, 1f)] private float _bottomPaddingPercent = 0f;
         [SerializeField, Range(0f, 1f)] private float _rightPaddingPercent = 0.11f;
+        [SerializeField] private Vector2 _gridOffset;
+        [Header("Cell Scale")]
+        [SerializeField, Range(0.1f, 2f)] private float _cellWidthScale = 1f;
+        [SerializeField, Range(0.1f, 2f)] private float _cellHeightScale = 1f;
 
         private Grid _grid;
         private Vector2Int _hoverCell = new Vector2Int(-1, -1);
@@ -31,8 +35,10 @@ namespace PVZ_MVS.Scripts.Grid
             float screenWidth = screenHeight * mainCamera.aspect;
             float gridHeight = screenHeight * _gridHeightPercent;
 
-            float cellHeight = gridHeight / RowCount * 1.05f;
-            float cellWidth = cellHeight * 3f / 4f * 1.1f * 1.1f * 0.95f * 0.98f;
+            float baseCellHeight = gridHeight / RowCount * 1.05f;
+            float cellHeight = baseCellHeight * _cellHeightScale;
+            float cellWidth = baseCellHeight * 3f / 4f * 1.1f * 1.1f * 0.95f * 0.98f
+                * _cellWidthScale;
             float gridWidth = ColumnCount * cellWidth;
             float screenBottom = mainCamera.transform.position.y
                 - screenHeight * 0.5f;
@@ -47,6 +53,7 @@ namespace PVZ_MVS.Scripts.Grid
                 screenBottom + screenHeight * _bottomPaddingPercent,
                 0f
             );
+            gridOrigin += (Vector3)_gridOffset;
 
             _grid = new Grid(
                 RowCount,
